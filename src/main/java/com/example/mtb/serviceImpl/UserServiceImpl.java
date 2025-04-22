@@ -1,5 +1,6 @@
 package com.example.mtb.serviceImpl;
 
+import com.example.mtb.dto.UserRegistrationRequest;
 import com.example.mtb.entity.TheaterOwner;
 import com.example.mtb.entity.User;
 import com.example.mtb.entity.UserDetails;
@@ -18,34 +19,35 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails userRegister(UserDetails userDetails) {
-        if (userRepository.existsByEmail(userDetails.getEmail())) {
-            throw new EmailAlreadyExistException("user mail already exist " + userDetails.getEmail());
+    public UserDetails userRegister(UserRegistrationRequest userRegistrationRequest) {
+        if (userRepository.existsByEmail(userRegistrationRequest.email())) {
+            throw new EmailAlreadyExistException("user mail already exist " + userRegistrationRequest.email());
         }
 
         long now = System.currentTimeMillis(); // current time in milliseconds
 
-        if (userDetails.getRole() == Role.USER) {
+        if (userRegistrationRequest.role() == Role.USER) {
             User user = new User();
-            user.setUserId(userDetails.getUserId());
-            user.setUserName(userDetails.getUserName());
-            user.setEmail(userDetails.getEmail());
-            user.setPassword(userDetails.getPassword());
-            user.setRole(userDetails.getRole());
-            user.setPhoneNumber(userDetails.getPhoneNumber());
-            user.setDateOfBirth(userDetails.getDateOfBirth());
+            user.setUserId(user.getUserId());
+            user.setUserName(userRegistrationRequest.userName());
+            user.setEmail(userRegistrationRequest.email());
+            user.setPassword(userRegistrationRequest.password());
+            user.setRole(userRegistrationRequest.role());
+            user.setPhoneNumber(userRegistrationRequest.phoneNumber());
+
+            user.setDateOfBirth(userRegistrationRequest.dateOfBirth());
             user.setCreatedAt(now);
             user.setUpdatedAt(now);
             return userRepository.save(user);
         } else {
             TheaterOwner theaterOwner = new TheaterOwner();
-            theaterOwner.setUserId(userDetails.getUserId());
-            theaterOwner.setUserName(userDetails.getUserName());
-            theaterOwner.setEmail(userDetails.getEmail());
-            theaterOwner.setPassword(userDetails.getPassword());
-            theaterOwner.setRole(userDetails.getRole());
-            theaterOwner.setPhoneNumber(userDetails.getPhoneNumber());
-            theaterOwner.setDateOfBirth(userDetails.getDateOfBirth());
+            theaterOwner.setUserId(theaterOwner.getUserId());
+            theaterOwner.setUserName(userRegistrationRequest.userName());
+            theaterOwner.setEmail(userRegistrationRequest.email());
+            theaterOwner.setPassword(userRegistrationRequest.password());
+            theaterOwner.setRole(userRegistrationRequest.role());
+            theaterOwner.setPhoneNumber(userRegistrationRequest.phoneNumber());
+            theaterOwner.setDateOfBirth(userRegistrationRequest.dateOfBirth());
             theaterOwner.setCreatedAt(now);
             theaterOwner.setUpdatedAt(now);
             return userRepository.save(theaterOwner);
