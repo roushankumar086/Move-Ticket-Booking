@@ -1,5 +1,6 @@
 package com.example.mtb.mapper;
 
+import com.example.mtb.dto.UserRequest;
 import com.example.mtb.dto.UserResponse;
 import com.example.mtb.entity.UserDetails;
 import org.springframework.stereotype.Component;
@@ -7,7 +8,8 @@ import org.springframework.stereotype.Component;
 
 @Component
     public class UserMapper {
-        public UserResponse toResponse(UserDetails user) {
+    long now = System.currentTimeMillis();
+    public UserResponse toResponse(UserDetails user) {
             return new UserResponse(
                     user.getUserId(),
                     user.getUserName(),
@@ -17,6 +19,21 @@ import org.springframework.stereotype.Component;
                     user.getDateOfBirth()
             );
         }
+
+        public UserDetails toUpdateUserDetails(UserRequest userRequest,UserDetails userDetails){
+            userDetails.setUserName(userRequest.userName());
+            userDetails.setPhoneNumber(userRequest.phoneNumber());
+            userDetails.setDateOfBirth(userRequest.dateOfBirth());
+            userDetails.setUpdatedAt(now);
+            return userDetails;
+        }
+
+    public UserDetails toDeleteUserDetails(UserDetails user) {
+
+        user.setDeleted(true);
+        user.setDeleteAt(now);
+        return user;
     }
+}
 
 

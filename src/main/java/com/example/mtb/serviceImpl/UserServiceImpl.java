@@ -1,12 +1,14 @@
 package com.example.mtb.serviceImpl;
 
 import com.example.mtb.dto.UserRegistrationRequest;
+import com.example.mtb.dto.UserRequest;
 import com.example.mtb.dto.UserResponse;
 import com.example.mtb.entity.TheaterOwner;
 import com.example.mtb.entity.User;
 import com.example.mtb.entity.UserDetails;
 import com.example.mtb.enums.Role;
 import com.example.mtb.exception.EmailAlreadyExistException;
+import com.example.mtb.exception.EmailNotExistException;
 import com.example.mtb.mapper.UserMapper;
 import com.example.mtb.repository.UserRepository;
 import com.example.mtb.service.UserService;
@@ -14,11 +16,15 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     @Autowired
     private final UserRepository userRepository;
+
+    private final UserMapper userMapper;
 
     @Override
     public UserResponse userRegister(UserRegistrationRequest userRegistrationRequest) {
@@ -55,4 +61,27 @@ public class UserServiceImpl implements UserService {
             return new UserMapper().toResponse( userRepository.save(theaterOwner));
         }
     }
+
+    @Override
+    public UserResponse updateUser(UserRequest userRequest, String email) {
+        UserDetails userDetails=userRepository.findByEmail(email);
+        if(userDetails==null)
+            throw new EmailNotExistException("Email Not found" +email);
+
+
+        return userMapper.toResponse(userRepository.save(userMapper.toUpdateUserDetails(userRequest,userDetails)));
+    }
+
+    @Override
+    public UserResponse softDeleteUser(String email) {
+        UserDetails user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new EmailNotExistException("Email not found: " + email);
+        }
+
+       return userMapper.toResponse(userRepository.save(userMapper.toDeleteUserDetails(user)));
+    }
+
+
+
 }
