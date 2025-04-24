@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 @Setter
@@ -24,17 +25,8 @@ public class UserDetails {
     @Column(length = 10)
     private String phoneNumber;
     private LocalDate dateOfBirth;
-    private Long createdAt, updatedAt;
+    private Long createdAt, updatedAt,deleteAt;
 
+    private boolean isDeleted = false;
 
-    @PrePersist
-    public void onCreate() {
-        this.createdAt = System.currentTimeMillis();
-        this.updatedAt = System.currentTimeMillis();
-    }
-
-    @PreUpdate
-    public void onUpdate() {
-        this.updatedAt = System.currentTimeMillis();
-    }
 }
